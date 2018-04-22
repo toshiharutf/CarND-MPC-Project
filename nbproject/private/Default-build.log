@@ -1,0 +1,42 @@
+Scanning dependencies of target mpc
+[ 33%] Building CXX object CMakeFiles/mpc.dir/src/MPC.cpp.o
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/MPC.cpp: In member function ‘std::vector<double> MPC::Solve(Eigen::VectorXd, Eigen::VectorXd)’:
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/MPC.cpp:62:21: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i = 0; i < n_vars; i++) {
+                     ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/MPC.cpp:74:21: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i = 0; i < n_constraints; i++) {
+                     ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/MPC.cpp:47:10: warning: unused variable ‘i’ [-Wunused-variable]
+   size_t i;
+          ^
+[ 66%] Building CXX object CMakeFiles/mpc.dir/src/main.cpp.o
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp: In lambda function:
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:90:18: warning: unused variable ‘px’ [-Wunused-variable]
+           double px = j[1]["x"];
+                  ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:91:18: warning: unused variable ‘py’ [-Wunused-variable]
+           double py = j[1]["y"];
+                  ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:92:18: warning: unused variable ‘psi’ [-Wunused-variable]
+           double psi = j[1]["psi"];
+                  ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:93:18: warning: unused variable ‘v’ [-Wunused-variable]
+           double v = j[1]["speed"];
+                  ^
+In file included from /home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:10:0:
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/json.hpp:545:5: warning: ‘steer_value’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     external_constructor<value_t::number_float>::construct(j, static_cast<typename BasicJsonType::number_float_t>(val));
+     ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:101:18: note: ‘steer_value’ was declared here
+           double steer_value;
+                  ^
+In file included from /home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:10:0:
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/json.hpp:545:5: warning: ‘throttle_value’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+     external_constructor<value_t::number_float>::construct(j, static_cast<typename BasicJsonType::number_float_t>(val));
+     ^
+/home/toshi/Documents/Term2/CarND-MPC-Project/src/main.cpp:102:18: note: ‘throttle_value’ was declared here
+           double throttle_value;
+                  ^
+[100%] Linking CXX executable mpc
+[100%] Built target mpc
