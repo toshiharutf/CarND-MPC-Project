@@ -94,14 +94,6 @@ int main() {
           double delta = j[1]["steering_angle"];
           double a = j[1]["throttle"];
 
-          /*
-          * TODO: Calculate steering angle and throttle using MPC.
-          *
-          * Both are in between [-1, 1].
-          *
-          */
-           // Transform the points to the vehicle's orientation
-            // polyfit needs Eigen::VectorXd
             Eigen::VectorXd ptsxCar(ptsx.size());
             Eigen::VectorXd ptsyCar(ptsy.size());
             
@@ -109,6 +101,7 @@ int main() {
             vector<double> next_x_vals;
             vector<double> next_y_vals;
             
+            // Transform the waypoints from world's to car's coordinate systems
             for (int i = 0; i < ptsx.size(); i++) {
                 double x = ptsx[i] - px;
                 double y = ptsy[i] - py;
@@ -127,28 +120,11 @@ int main() {
                       // Center of gravity needed related to psi and epsi
           const double Lf = 2.67;
           
-          // Latency for predicting time at actuation
-          const double dt = 0.1;
-          
-          // Predict state after latency
-          // x, y and psi are all zero after transformation above
-          /*
-          double pred_px = 0.0 + v * dt; // Since psi is zero, cos(0) = 1, can leave out
-          const double pred_py = 0.0; // Since sin(0) = 0, y stays as 0 (y + v * 0 * dt)
-          double pred_psi = 0.0 + v * -delta / Lf* dt;
-          double pred_v = v + a * dt;
-          double pred_cte = cte + v * sin(epsi) * dt;
-          double pred_epsi = epsi + v / Lf* (-delta) * dt;
-          
-          // Feed in the predicted state values
-          Eigen::VectorXd state(6);
-         state << pred_px, pred_py, pred_psi, pred_v, pred_cte, pred_epsi;
-         */
+         // Initial state values for the optimal solver
          Eigen::VectorXd state(10);
          state << 0.0, 0.0, 0.0, v, cte, epsi, 0.0, 0.0, 0.0, 0.0; //px, py, psi, v, cte, delta_x1, delta_x2, a_x1, a_x2
           
           // Solve for new actuations (and to show predicted x and y in the future)
-          
           auto vars = mpc.Solve(state, coeffs);
           
         // NOTE: Remember to divide by deg2rad(25) before you send the steering value back.

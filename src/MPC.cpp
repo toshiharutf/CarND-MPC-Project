@@ -41,7 +41,6 @@ size_t a_start = delta_start + N - 1;
 // presented in the classroom matched the previous radius.
 //
 // This is the length from front to CoG that has a similar radius.
-//const double Lf = 2.67;
 const double Lf = 2.67;
 
 class FG_eval {
@@ -65,21 +64,17 @@ class FG_eval {
       }  
       // Minimize change-rate.
       for (int t = 0; t < N - 1; t++) {
-       // fg[0] += costWeights[0]*CppAD::pow(vars[cte_start+t], 2);
-        //fg[0] += costWeights[1]*CppAD::pow(vars[epsi_start+t], 2);  
-          
         fg[0] += costWeights[3]*CppAD::pow(vars[delta_start + t], 2);
         fg[0] += costWeights[4]*CppAD::pow(vars[a_start + t], 2);
       }
 
       // Minimize the value gap between sequential actuations.
-      
       for (int t = 0; t < N - 2; t++) {
         fg[0] += costWeights[5]*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
         fg[0] += costWeights[6]*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
       }
       
-      // Final terminal cost. Increases system stability
+      // Final terminal cost. Experimental
        // fg[0] += finalWeightCTE*CppAD::pow(vars[cte_start+(N-1)], 2);
         //fg[0] += finalWeightEpsi*CppAD::pow(vars[epsi_start+(N-1)], 2); 
 
@@ -128,6 +123,7 @@ class FG_eval {
             //AD<double> f0 = coeffs[0] + coeffs[1] * x0 + coeffs[2] * pow(x0, 2) + coeffs[3] * pow(x0, 3);
             //AD<double> psides0 = CppAD::atan(coeffs[1] + 2*coeffs[2]*x0 + 3*coeffs[3]*pow(x0,2));
             
+            // Using the waypoint one time step ahead, so the car "chases" the waypoints
             AD<double> f0 = coeffs[0] + coeffs[1] * x1 + coeffs[2] * pow(x1, 2) + coeffs[3] * pow(x1, 3);
             AD<double> psides0 = CppAD::atan(coeffs[1] + 2*coeffs[2]*x1 + 3*coeffs[3]*pow(x1,2));
 
@@ -146,8 +142,10 @@ class FG_eval {
             fg[1 + v_start + t]     = v1 - (v0 + (a_x1_0 - C_drag*pow(v0,2) ) * dt);
             fg[1 + cte_start + t]   = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));
             fg[1 + epsi_start + t]  = epsi1 - ((psi0 - psides0) + v0 / (Lf)* (delta_x1_0)  * dt);
+            // Second order steering model, with a 0.1 s settling time
             fg[1 + delta_x1_start + t] = delta_x1_1 - (delta_x1_0 + (-11.3643*delta_x1_0 + 7.5782*delta_x2_1 + 15.3421*(-delta0) ) * dt);
             fg[1 + delta_x2_start + t] = delta_x2_1 - (delta_x2_0 + (-7.9648*delta_x1_0 - 13.6062*delta_x2_0 + 0.7482*(-delta0) )*dt) ;
+            // Second order throttle model, with a 0.1 s settling time
             fg[1 + a_x1_start + t] = a_x1_1 - (a_x1_0 + (-11.3643*a_x1_0 + 7.5782*a_x2_1 + 15.3421*a0) * dt);
             fg[1 + a_x2_start + t] = a_x2_1 - (a_x2_0 + (-7.9648*a_x1_0 - 13.6062*a_x2_0 + 0.7482*a0)*dt) ;
         }

@@ -3,6 +3,35 @@ Self-Driving Car Engineer Nanodegree Program
 
 ---
 
+## Description
+In this project, a self driving car implementation was done with an MPC controller. The MPC controller controls both the steering and throttle, so that the car follows the path trajectory.
+The optimal NLP solver used was Ipopt, with CppAD to provide the Jacobian and Hessian. 
+
+The Udacity simulator provide as input the way points of the roadway center. This curve is then approximated using a third degree polynomial. However, these points are provided in world's (or simulator map's) coordinate system, so they have to be converted first. The code for this part is in main.cpp, lines 104-116. Also in the main.cpp file, lines 124-129, the initial states values are set up and send to the MPC controller.
+
+MPC is an implementation of an optimal control problem. In an optimization problem, a cost function is minimized within the system's (vehicle model) constrainsts. For this project, the cost function has mainly the deviation from the road waypoints (MPC.cpp 61-63). To maximize the speed of the vehicle, a cruise speed is setup in fed to the cost function, also. To reduce jerkiness in the actuators, their variables are also introduced (MPC.cpp 65-68). 
+
+The Udacity car simulator introduces an artificial **actuator delay** for the steering and throttle of 0.1 s. This delay has been taken in account by modelling both actuators as a **second degree linear system**. The steering model uses variables delta_x1 and delta_x2. The output for this model is delta_x1, and its input, delta. This is similar for the throttle system model. Both actuator models increases the system states number to N=10. However, the Ipopt solver is still able to solve the problem on time to control the car. The implementation of both models can be seen in lines MPC.cpp 145-150. Also notices that, if you don't take into account this delay, the system is very unstable. 
+
+I also noticed that the Udacity car simulates some kind of **aerodynamic drag**, since the car accelerates slower when the speed increases. In line 142, the C_drag*v² factor was introduced, so that the throttle increases to compensate this effect. I noticed a small increase in speed, without compromising the steering and braking response in curves.
+
+## Conclusions
+The MPC controller works quite well, as it can be seen in the following [video](https://youtu.be/XX6yrSNat6w). In one part of the track, it almost reach 100 mph.
+
+## Improvements
+It would be cool to know the exact model the Udacity simulator uses. The MPC controller is as good as the model used, after all.
+
+## Netbeand IDE
+I used Netbeans for this project. You may find the nbproject file inside.
+
+## Real implementation of an MPC controller for selfdriving cars
+I implemented an MPC controller on  RC 1:5 car. You can wath the results in the following video.
+
+[Single track - dynamic model MPC] (https://youtu.be/lzwB4FAgJ9Y)
+
+If you want to know more about MPC, vehicle models, and how the algorythm in the video was implemented, you can read my master's thesis [here](http://tesis.pucp.edu.pe/repositorio/handle/123456789/8901).
+
+---
 ## Dependencies
 
 * cmake >= 3.5
@@ -38,71 +67,5 @@ Self-Driving Car Engineer Nanodegree Program
 3. Compile: `cmake .. && make`
 4. Run it: `./mpc`.
 
-## Tips
 
-1. It's recommended to test the MPC on basic examples to see if your implementation behaves as desired. One possible example
-is the vehicle starting offset of a straight line (reference). If the MPC implementation is correct, after some number of timesteps
-(not too many) it should find and track the reference line.
-2. The `lake_track_waypoints.csv` file has the waypoints of the lake track. You could use this to fit polynomials and points and see of how well your model tracks curve. NOTE: This file might be not completely in sync with the simulator so your solution should NOT depend on it.
-3. For visualization this C++ [matplotlib wrapper](https://github.com/lava/matplotlib-cpp) could be helpful.)
-4.  Tips for setting up your environment are available [here](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/23d376c7-0195-4276-bdf0-e02f1f3c665d)
-5. **VM Latency:** Some students have reported differences in behavior using VM's ostensibly a result of latency.  Please let us know if issues arise as a result of a VM environment.
 
-## Editor Settings
-
-We've purposefully kept editor configuration files out of this repo in order to
-keep it as simple and environment agnostic as possible. However, we recommend
-using the following settings:
-
-* indent using spaces
-* set tab width to 2 spaces (keeps the matrices in source code aligned)
-
-## Code Style
-
-Please (do your best to) stick to [Google's C++ style guide](https://google.github.io/styleguide/cppguide.html).
-
-## Project Instructions and Rubric
-
-Note: regardless of the changes you make, your project must be buildable using
-cmake and make!
-
-More information is only accessible by people who are already enrolled in Term 2
-of CarND. If you are enrolled, see [the project page](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/f1820894-8322-4bb3-81aa-b26b3c6dcbaf/lessons/b1ff3be0-c904-438e-aad3-2b5379f0e0c3/concepts/1a2255a0-e23c-44cf-8d41-39b8a3c8264a)
-for instructions and the project rubric.
-
-## Hints!
-
-* You don't have to follow this directory structure, but if you do, your work
-  will span all of the .cpp files here. Keep an eye out for TODOs.
-
-## Call for IDE Profiles Pull Requests
-
-Help your fellow students!
-
-We decided to create Makefiles with cmake to keep this project as platform
-agnostic as possible. Similarly, we omitted IDE profiles in order to we ensure
-that students don't feel pressured to use one IDE or another.
-
-However! I'd love to help people get up and running with their IDEs of choice.
-If you've created a profile for an IDE that you think other students would
-appreciate, we'd love to have you add the requisite profile files and
-instructions to ide_profiles/. For example if you wanted to add a VS Code
-profile, you'd add:
-
-* /ide_profiles/vscode/.vscode
-* /ide_profiles/vscode/README.md
-
-The README should explain what the profile does, how to take advantage of it,
-and how to install it.
-
-Frankly, I've never been involved in a project with multiple IDE profiles
-before. I believe the best way to handle this would be to keep them out of the
-repo root to avoid clutter. My expectation is that most profiles will include
-instructions to copy files to a new location to get picked up by the IDE, but
-that's just a guess.
-
-One last note here: regardless of the IDE used, every submitted project must
-still be compilable with cmake and make./
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
