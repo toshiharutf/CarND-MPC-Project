@@ -21,7 +21,7 @@ The MPC controller works quite well, as it can be seen in the following [video](
 ## Improvements
 It would be cool to know the exact model the Udacity simulator uses. The MPC controller is as good as the model used, after all.
 
-## Netbeand IDE
+## Netbeans IDE
 I used Netbeans for this project. You may find the nbproject file inside.
 
 ## Real implementation of an MPC controller for selfdriving cars
